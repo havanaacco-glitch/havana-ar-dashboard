@@ -4,19 +4,14 @@
 :root{--navy:#173457;--navy2:#112845;--bg:#f4f6f9;--card:#fff;--line:#dfe6ef;--text:#132238;--muted:#778296;--chip:#f6f8fb}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Tahoma,sans-serif;color:var(--text)}.page{max-width:1460px;margin:auto;padding:14px}
 .hero{background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;border-radius:14px;padding:22px 26px;min-height:118px;display:flex;flex-direction:column;justify-content:center}.hero h1{margin:0 0 10px;font-size:25px}.hero p{margin:0;font-size:12px;opacity:.88}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}.kpi,.panel{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(14,36,64,.06)}.kpi{padding:18px 16px;min-height:108px}.kpi .label{font-size:11px;color:var(--muted);margin-bottom:12px}.kpi .value{font-size:22px;font-weight:800}.kpi .sub{font-size:10px;color:#94a0b1;margin-top:5px}
+.kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin:14px 0}.kpi,.panel{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(14,36,64,.06)}.kpi{padding:18px 16px;min-height:108px}.kpi .label{font-size:11px;color:var(--muted);margin-bottom:12px}.kpi .value{font-size:22px;font-weight:800}.kpi .sub{font-size:10px;color:#94a0b1;margin-top:5px}
 .panel{padding:22px;margin-bottom:14px}h2{font-size:17px;margin:0 0 18px}h3{font-size:15px;margin:18px 0 12px}.row{display:flex;flex-wrap:wrap;gap:10px}.pill{border:1px solid transparent;background:var(--chip);color:#344255;border-radius:999px;padding:8px 14px;font-weight:700;font-size:11px;cursor:pointer}.pill.active{background:var(--navy);color:#fff}.branch.active{background:#eef4fb;color:#102f55;border-color:#cbd9e8}
 .metrics{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.metric{background:#f7f9fc;border-radius:10px;padding:8px 11px;font-size:11px;color:#516078}.metric b{color:#24344a}.search{width:100%;max-width:520px;border:1px solid #cfd9e6;border-radius:8px;padding:10px 12px;font-size:12px;outline:none;margin-bottom:12px}
 .tableWrap{border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:640px}table{border-collapse:collapse;width:100%;min-width:980px;background:#fff}th,td{padding:9px 11px;border-bottom:1px solid #e8edf3;font-size:11px;text-align:right;white-space:nowrap}th{position:sticky;top:0;background:#eaf0f6;z-index:2;font-weight:800}tbody tr:hover td{background:#f9fbfd}.empty{padding:28px;text-align:center;color:#8490a0}.wa{white-space:pre-wrap;background:#f7f9fc;border-radius:10px;padding:14px;line-height:1.9;font-size:12px}.copy{border:0;background:var(--navy);color:white;border-radius:8px;padding:9px 14px;margin-top:10px;cursor:pointer;font-weight:700}
 @media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}.hero h1{font-size:21px}.page{padding:8px}.panel{padding:15px}.kpi .value{font-size:18px}}
 </style></head><body><div class="page">
-<section class="hero"><h1>تقرير خصومات جلسات فروع هافانا</h1><p>تفصيلي حسب العميل والجلسة | Odoo 18 Live → Google Sheet → HTML</p><div id="buildStamp" style="font-size:10px;opacity:.7;margin-top:8px">آخر تحديث HTML: 25-10-2026 | بيانات حتى 24-10-2026</div></section>
-<section class="kpis">
-<div class="kpi"><div class="label">صافي الخصم شامل الضريبة</div><div class="value">16,997.48 ر.س</div></div>
-<div class="kpi"><div class="label">صافي الخصم قبل الضريبة</div><div class="value">14,783.57 ر.س</div></div>
-<div class="kpi"><div class="label">الخصومات الممنوحة</div><div class="value">17,193.27 ر.س</div></div>
-<div class="kpi"><div class="label">أعلى فرع تراكمي</div><div class="value">المحجر</div><div class="sub">4,850.11 ر.س</div></div>
-</section>
+<section class="hero"><h1>تقرير خصومات جلسات فروع هافانا</h1><p>تفصيلي حسب العميل والجلسة | Odoo 18 Live → Google Sheet → HTML</p><div id="buildStamp" style="font-size:10px;opacity:.7;margin-top:8px">آخر تحديث HTML: 25-10-2026 | أحدث بيانات: 24-10-2026</div></section>
+<section class="kpis" id="kpis"></section>
 <section class="panel"><h2>اختر التاريخ</h2><div class="row" id="dates"></div><div class="metrics" id="dayMetrics"></div><h3>اختر الفرع</h3><div class="row" id="branches"></div></section>
 <section class="panel"><h2 id="title">تفاصيل خصومات العملاء</h2><input class="search" id="search" placeholder="ابحث باسم العميل..." oninput="renderTable()"><div class="metrics" id="branchMetrics"></div>
 <div class="tableWrap"><table><thead><tr><th>اسم العميل</th><th>رقم الجلسة</th><th>عدد الحركات</th><th>الخصم الممنوح</th><th>صافي الخصم شامل الضريبة</th><th>صافي الخصم قبل الضريبة</th></tr></thead><tbody id="tbody"></tbody></table></div></section>
@@ -28,6 +23,15 @@ const customers=[{"date":"17-10-2026","branch":"البطحاء","session":"POS/1
 const dates=[...new Set(daily.map(x=>x.date))];
 let currentDate=dates[dates.length-1]||"",currentBranch="";
 const money=n=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function renderKpis(){
+ const order=['البطحاء','الستين','القصيم','المحجر','النموذجية','جيزان','خميس مشيط'];
+ const dr=daily.filter(x=>x.date===currentDate);
+ const map=Object.fromEntries(dr.map(x=>[x.branch,x]));
+ document.getElementById("kpis").innerHTML=order.map(b=>{
+   const x=map[b]||{};
+   return '<div class="kpi"><div class="label">'+b+' — صافي الخصم</div><div class="value">'+money(x.net||0)+' ر.س</div><div class="sub">'+(x.session||'لا توجد جلسة')+' | '+(x.customers||0)+' عميل</div></div>';
+ }).join("");
+}
 function renderFilters(){
  document.getElementById("dates").innerHTML=dates.map(d=>'<button class="pill '+(d===currentDate?'active':'')+'" onclick="currentDate=\''+d+'\';currentBranch=\'\';renderAll()">'+d+'</button>').join("");
  const dr=daily.filter(x=>x.date===currentDate);const bs=[...new Set(dr.map(x=>x.branch))];if(!currentBranch&&bs.length)currentBranch=bs[0];
@@ -44,5 +48,5 @@ function renderTable(){
  document.getElementById("tbody").innerHTML=list.length?list.map(x=>'<tr><td>'+x.customer+'</td><td>'+x.session+'</td><td>'+x.movements+'</td><td>'+money(x.granted)+'</td><td>'+money(x.net)+'</td><td>'+money(x.netex)+'</td></tr>').join(""):'<tr><td colspan="6" class="empty">لا توجد بيانات عملاء لهذا الفرع في التاريخ المختار</td></tr>';
 }
 function renderWa(){const dr=daily.filter(x=>x.date===currentDate).sort((a,b)=>b.net-a.net);let t='📊 *تقرير خصومات فروع هافانا*\n📅 '+currentDate+'\n\n';dr.forEach(x=>t+='• *'+x.branch+'*: '+money(x.net)+' ر.س | '+x.customers+' عميل | '+x.movements+' حركة\n');t+='\n💰 *إجمالي صافي خصم اليوم: '+money(dr.reduce((s,x)=>s+x.net,0))+' ر.س شامل الضريبة*';document.getElementById("wa").innerText=t}
-function renderAll(){renderFilters();renderTable();renderWa()}renderAll();
-</script></body></html>
+function renderAll(){renderKpis();renderFilters();renderTable();renderWa()}renderAll();
+</script><div style="text-align:center;font-size:9px;color:#9aa6b5;padding:6px">Dashboard build: 2026-10-25-kpi-daily-v2</div></body></html>
